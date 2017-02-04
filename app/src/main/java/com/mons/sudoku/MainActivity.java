@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity
     public GridView gridView;
     public String[] gridItems;
 
+
     /**
      * Creates the MainActivity view when the application starts up.
      *
