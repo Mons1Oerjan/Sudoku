@@ -1,6 +1,7 @@
 package com.mons.sudoku;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class contains all the possible starting board states
@@ -11,7 +12,10 @@ import java.util.ArrayList;
 
 public class SudokuDB {
 
-    private int[] emptyboard = new int[] {
+    private static ArrayList<int[]> games = new ArrayList<>();
+    private static Random randomGenerator = new Random();
+
+    private static final int[] emptyboard = new int[] {
             0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -23,7 +27,7 @@ public class SudokuDB {
             0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
 
-    private int[] game1 = new int[] {
+    private static final int[] game1 = new int[] {
             0, 0, 4, 8, 0, 0, 0, 0, 0,
             0, 9, 0, 4, 6, 0, 0, 7, 0,
             0, 5, 0, 0, 0, 0, 6, 1, 4,
@@ -35,7 +39,7 @@ public class SudokuDB {
             0, 0, 0, 0, 0, 4, 1, 0, 0,
     };
 
-    private int[] game2 = new int[] {
+    private static final int[] game2 = new int[] {
             3, 0, 0, 0, 0, 2, 1, 0, 0,
             8, 0, 6, 0, 9, 0, 0, 3, 0,
             0, 7, 0, 0, 8, 5, 2, 4, 0,
@@ -47,7 +51,7 @@ public class SudokuDB {
             0, 0, 4, 1, 0, 0, 0, 0, 7,
     };
 
-    private int[] game3 = new int[] {
+    private static final int[] game3 = new int[] {
             8, 5, 0, 2, 1, 0, 0, 9, 0,
             0, 0, 7, 0, 0, 3, 4, 0, 6,
             0, 0, 9, 0, 6, 0, 2, 0, 0,
@@ -59,26 +63,27 @@ public class SudokuDB {
             0, 9, 0, 0, 4, 8, 0, 7, 2,
     };
 
-    /**
-     * Constructor that fills the parameter with all starting game states.
-     *
-     * @param games
-     */
-    public SudokuDB(ArrayList<int[]> games){
+    private static void initGames(){
         games.add(game1);
         games.add(game2);
         games.add(game3);
     }
 
-    public int[] getGame1(){
+
+    public static int[] getRandomGame(){
+        initGames();
+        return games.get(randomGenerator.nextInt(games.size()));
+    }
+
+    public static int[] getGame1(){
         return game1;
     }
 
-    public int[] getGame2(){
+    public static int[] getGame2(){
         return game2;
     }
 
-    public int[] getGame3(){
+    public static int[] getGame3(){
         return game3;
     }
 
