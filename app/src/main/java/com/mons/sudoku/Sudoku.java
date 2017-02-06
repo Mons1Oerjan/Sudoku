@@ -55,7 +55,7 @@ public class Sudoku {
      *
      * @param grid
      */
-    public void resetGrid(int[] grid){
+    private void resetGrid(int[] grid){
 
         //clear the map containing the logic:
         available.clear();
@@ -85,7 +85,7 @@ public class Sudoku {
      * @param grid
      * @param available
      */
-    public void updateAvailableInputs(int[] grid, ArrayList<ArrayList<Integer>> available){
+    private void updateAvailableInputs(int[] grid, ArrayList<ArrayList<Integer>> available){
 
         //loop over each tile in the entire grid
         for (int i = 0; i < totalgridsize; i++) {
@@ -108,7 +108,7 @@ public class Sudoku {
      * @param value
      * @param available
      */
-    public void removeValueFromMap(int gridIndex, int value,
+    private void removeValueFromMap(int gridIndex, int value,
                                    ArrayList<ArrayList<Integer>> available){
 
         //shift gridIndex by 1 because it originally ranges from 0-80
@@ -230,7 +230,7 @@ public class Sudoku {
      * @param key
      * @param value
      */
-    private static void removeValueAtIndex(ArrayList<ArrayList<Integer>> map,
+    private void removeValueAtIndex(ArrayList<ArrayList<Integer>> map,
                                            int key, int value) {
         ArrayList<Integer> values = map.get(key);
         if (values.contains(value)){
