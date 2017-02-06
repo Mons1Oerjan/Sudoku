@@ -106,9 +106,10 @@ public class Sudoku {
      *
      * @param gridIndex
      * @param value
-     * @param map
+     * @param available
      */
-    public void removeValueFromMap(int gridIndex, int value, ArrayList<ArrayList<Integer>> map){
+    public void removeValueFromMap(int gridIndex, int value,
+                                   ArrayList<ArrayList<Integer>> available){
 
         //shift gridIndex by 1 because it originally ranges from 0-80
         gridIndex += 1;
@@ -143,37 +144,98 @@ public class Sudoku {
         }
 
         //find the 3x3 grid based on row and column:
-        int smallGrid;
+        int smallGridId;
         if (row <= 3) {
             if (column <= 3) {
-                smallGrid = 1;
+                smallGridId = 1;
             } else if (column >= 4 && column <= 6){
-                smallGrid = 2;
+                smallGridId = 2;
             } else {
-                smallGrid = 3;
+                smallGridId = 3;
             }
         } else if (row >= 4 && row <= 6) {
             if (column <= 3) {
-                smallGrid = 4;
+                smallGridId = 4;
             } else if (column >= 4 && column <= 6){
-                smallGrid = 5;
+                smallGridId = 5;
             } else {
-                smallGrid = 6;
+                smallGridId = 6;
             }
         } else {
             if (column <= 3) {
-                smallGrid = 7;
+                smallGridId = 7;
             } else if (column >= 4 && column <= 6){
-                smallGrid = 8;
+                smallGridId = 8;
             } else {
-                smallGrid = 9;
+                smallGridId = 9;
             }
         }
 
-        //we now know which column, row, and smallerGrid to remove available inputs from
-        //remove the value parameter from the hashmap in these locations
+        //remove the value param from the row:
+        int interval_start = 0, interval_finish = 9;
+        interval_finish *= row;
+        interval_start = interval_finish - 9;
+        for (int i = interval_start; i < interval_finish; i++) {
+            removeValueAtIndex(available, i, value);
+        }
 
+        //remove the value param from the column:
+        for (int i = column; i <= totalgridsize ; i+=9) {
+            removeValueAtIndex(available, i, value);
+        }
 
+        //remove the value param from the smallerGrid:
+        int startTile = 0;
+        switch(smallGridId){
+            case 1:
+                startTile = 1;
+                break;
+            case 2:
+                startTile = 4;
+                break;
+            case 3:
+                startTile = 7;
+                break;
+            case 4:
+                startTile = 28;
+                break;
+            case 5:
+                startTile = 31;
+                break;
+            case 6:
+                startTile = 34;
+                break;
+            case 7:
+                startTile = 55;
+                break;
+            case 8:
+                startTile = 58;
+                break;
+            case 9:
+                startTile = 61;
+                break;
+        }
+        for (int i = 0; i < 3; i++) { //loop over three rows
+            //remove value from each entry in the smallerGrid row:
+            for (int j = startTile; j < (startTile+3); j++) {
+                removeValueAtIndex(available, j, value);
+            }
+            startTile += 9; //go to next row
+        }
+    }
+
+    /**
+     * Function that removes the value from the key list in the hashmap
+     * @param map
+     * @param key
+     * @param value
+     */
+    private static void removeValueAtIndex(ArrayList<ArrayList<Integer>> map,
+                                           int key, int value) {
+        ArrayList<Integer> values = map.get(key);
+        if (values.contains(value)){
+            values.remove(values.indexOf(value));
+        }
     }
 
 }
