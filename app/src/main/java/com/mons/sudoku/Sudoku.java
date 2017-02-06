@@ -9,22 +9,27 @@ import java.util.ArrayList;
  */
 public class Sudoku {
 
+    //singleton instance of this class:
     private static Sudoku instance;
 
+    //constants:
     private static final int gridsize = 9;
     private static final int totalgridsize = 81;
 
     //hashmap that keeps track of the Sudoku logic:
     private ArrayList<ArrayList<Integer>> available = new ArrayList<>();
 
+    private int[] grid;
 
     /**
-     * Empty constructor
+     * Private constructor satisfies the singleton pattern
      */
-    private Sudoku(){}
+    private Sudoku() {
+
+    }
 
     /**
-     * Sudoku uses the Singleton Pattern
+     * Lazy initialization of the Sudoku singleton.
      *
      * @return instance
      */
@@ -41,11 +46,9 @@ public class Sudoku {
      * @return grid
      */
     public int[] newGrid(){
-        int[] grid = new int[totalgridsize];
+        grid = new int[totalgridsize];
 
-        resetGrid(grid);
-
-
+        resetGrid();
 
         return grid;
     }
@@ -53,9 +56,13 @@ public class Sudoku {
     /**
      * Resets the given grid
      *
-     * @param grid
      */
-    private void resetGrid(int[] grid){
+    private void resetGrid(){
+
+        //set all grid entries to 0:
+        for (int i = 0; i < totalgridsize; i++) {
+            grid[i] = 0;
+        }
 
         //clear the map containing the logic:
         available.clear();
@@ -63,40 +70,35 @@ public class Sudoku {
         //rebuild the hashmap with available inputs
         //fills in all 81 slots with numbers 1-9
         for (int i = 0; i < totalgridsize; i++) {
-            ArrayList<Integer> newList = new ArrayList<>();
+            ArrayList<Integer> inputs = new ArrayList<>();
             for (int j = 1; j <= gridsize; j++) {
-                newList.add(j);
+                inputs.add(j);
             }
-            available.add(i, newList);
+            available.add(i, inputs);
         }
 
         //get a new random game
         grid = SudokuDB.getRandomGame();
 
         //remove unavailable numbers from the map
-        updateAvailableInputs(grid, available);
+        updateAvailableInputs();
 
     }
 
     /**
      * Function that checks each grid tile and removes inputted values from the hashmap.
      * This function updates the legal moves for the player.
-     *
-     * @param grid
-     * @param available
      */
-    private void updateAvailableInputs(int[] grid, ArrayList<ArrayList<Integer>> available){
+    private void updateAvailableInputs(){
 
-        //loop over each tile in the entire grid
+        //loop over each tile in the entire grid:
         for (int i = 0; i < totalgridsize; i++) {
+            int value = grid[i];
 
-            int gridTileValue = grid[i];
-            ArrayList<Integer> availableInputs = available.get(i);
-
-            //check the current grid position for input
-            if (gridTileValue != 0) {
+            //check the current grid position for input:
+            if (value != 0) {
                 //This tile has some input. We must remove it from the available inputs
-                removeValueFromMap(i, gridTileValue, available);
+                removeValueFromMap(i, value);
             }
         }
     }
@@ -106,16 +108,11 @@ public class Sudoku {
      *
      * @param gridIndex
      * @param value
-     * @param available
      */
-    private void removeValueFromMap(int gridIndex, int value,
-                                   ArrayList<ArrayList<Integer>> available){
-
-        //shift gridIndex by 1 because it originally ranges from 0-80
-        gridIndex += 1;
+    private void removeValueFromMap(int gridIndex, int value){
 
         //find the column:
-        int column = gridIndex % 9;
+        int column = (gridIndex+1) % 9;
         if (column == 0){
             //the 9th column mod 9 = 0, so set it to 9
             column = 9;
@@ -123,21 +120,21 @@ public class Sudoku {
 
         //find the row:
         int row;
-        if (gridIndex <= 9){
+        if (gridIndex <= 8){
             row = 1;
-        } else if (gridIndex >= 10 && gridIndex <= 18){
+        } else if (gridIndex >= 9 && gridIndex <= 17){
             row = 2;
-        } else if (gridIndex >= 19 && gridIndex <= 27){
+        } else if (gridIndex >= 18 && gridIndex <= 26){
             row = 3;
-        } else if (gridIndex >= 28 && gridIndex <= 36){
+        } else if (gridIndex >= 27 && gridIndex <= 35){
             row = 4;
-        } else if (gridIndex >= 37 && gridIndex <= 45){
+        } else if (gridIndex >= 36 && gridIndex <= 44){
             row = 5;
-        } else if (gridIndex >= 46 && gridIndex <= 54){
+        } else if (gridIndex >= 45 && gridIndex <= 53){
             row = 6;
-        } else if (gridIndex >= 55 && gridIndex <= 63){
+        } else if (gridIndex >= 54 && gridIndex <= 62){
             row = 7;
-        } else if (gridIndex >= 64 && gridIndex <= 72){
+        } else if (gridIndex >= 63 && gridIndex <= 71){
             row = 8;
         } else {
             row = 9;
@@ -153,7 +150,7 @@ public class Sudoku {
             } else {
                 smallGridId = 3;
             }
-        } else if (row >= 4 && row <= 6) {
+        } else if (row <= 6) {
             if (column <= 3) {
                 smallGridId = 4;
             } else if (column >= 4 && column <= 6){
@@ -172,53 +169,52 @@ public class Sudoku {
         }
 
         //remove the value param from the row:
-        int interval_start = 0, interval_finish = 9;
-        interval_finish *= row;
-        interval_start = interval_finish - 9;
+        int interval_finish = (9 * row)-1;
+        int interval_start = interval_finish - 8;
         for (int i = interval_start; i < interval_finish; i++) {
-            removeValueAtIndex(available, i, value);
+            removeValueAtIndex(i, value);
         }
 
         //remove the value param from the column:
-        for (int i = column; i <= totalgridsize ; i+=9) {
-            removeValueAtIndex(available, i, value);
+        for (int i = column-1; i < totalgridsize ; i+=9) {
+            removeValueAtIndex(i, value);
         }
 
         //remove the value param from the smallerGrid:
         int startTile = 0;
         switch(smallGridId){
             case 1:
-                startTile = 1;
+                startTile = 0;
                 break;
             case 2:
-                startTile = 4;
+                startTile = 3;
                 break;
             case 3:
-                startTile = 7;
+                startTile = 6;
                 break;
             case 4:
-                startTile = 28;
+                startTile = 27;
                 break;
             case 5:
-                startTile = 31;
+                startTile = 30;
                 break;
             case 6:
-                startTile = 34;
+                startTile = 33;
                 break;
             case 7:
-                startTile = 55;
+                startTile = 54;
                 break;
             case 8:
-                startTile = 58;
+                startTile = 57;
                 break;
             case 9:
-                startTile = 61;
+                startTile = 60;
                 break;
         }
         for (int i = 0; i < 3; i++) { //loop over three rows
             //remove value from each entry in the smallerGrid row:
             for (int j = startTile; j < (startTile+3); j++) {
-                removeValueAtIndex(available, j, value);
+                removeValueAtIndex(j, value);
             }
             startTile += 9; //go to next row
         }
@@ -226,15 +222,12 @@ public class Sudoku {
 
     /**
      * Function that removes the value from the key list in the hashmap
-     * @param map
      * @param key
      * @param value
      */
-    private void removeValueAtIndex(ArrayList<ArrayList<Integer>> map,
-                                           int key, int value) {
-        ArrayList<Integer> values = map.get(key);
-        if (values.contains(value)){
-            values.remove(values.indexOf(value));
+    private void removeValueAtIndex(int key, int value) {
+        if (available.get(key).contains(value)){
+            available.get(key).remove(available.get(key).indexOf(value));
         }
     }
 
