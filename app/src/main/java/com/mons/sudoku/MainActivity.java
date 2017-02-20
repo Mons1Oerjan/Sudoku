@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
 /**
@@ -14,6 +15,9 @@ import android.widget.GridView;
 public class MainActivity extends AppCompatActivity
 {
     public GridView gridView;
+    public Button restartGameButton;
+    CustomGridAdapter gridAdapter;
+
     public String[] gridItems = new String[81];
     private Sudoku sudoku = Sudoku.getInstance();
 
@@ -27,11 +31,18 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        newGame();
-
         gridView = (GridView) this.findViewById(R.id.myGridView);
-        CustomGridAdapter gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems);
-        gridView.setAdapter(gridAdapter);
+
+        //New Game Button:
+        restartGameButton = (Button) this.findViewById(R.id.button1);
+        restartGameButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                newGame();
+            }
+        });
+
+        //set the first game on startup:
+        newGame();
     }
 
 
@@ -68,6 +79,8 @@ public class MainActivity extends AppCompatActivity
                 gridItems[i] = Integer.toString(grid[i]);
             }
         }
+        gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems);
+        gridView.setAdapter(gridAdapter);
     }
 
 
