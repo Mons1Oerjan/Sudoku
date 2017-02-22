@@ -24,7 +24,7 @@ public class CustomGridAdapter extends BaseAdapter {
      * @param context
      * @param items
      */
-    public CustomGridAdapter(Context context, String[] items, boolean startItems) {
+    public CustomGridAdapter(Context context, String[] items) {
         this.context = context;
         this.items = items;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

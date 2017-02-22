@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.TextView;
+import android.content.DialogInterface;
 
 /**
  * This MainActivity class takes care of the app on a high-level.
@@ -16,16 +16,15 @@ import android.widget.TextView;
  */
 public class MainActivity extends AppCompatActivity
 {
+    CustomGridAdapter gridAdapter;
     public GridView gridView;
     public Button restartGameButton, button_1, button_2,
             button_3, button_4, button_5, button_6, button_7,
-            button_8, button_9, buttonSelected;
-    //public TextView gridViewItems;
-    CustomGridAdapter gridAdapter;
+            button_8, button_9;
     public String buttonValue = "";
-
     public String[] gridItems = new String[81];
     private Sudoku sudoku = Sudoku.getInstance();
+    private AlertDialog.Builder illegalMovePopup;
 
     /**
      * Creates the MainActivity view when the application starts up.
@@ -45,6 +44,9 @@ public class MainActivity extends AppCompatActivity
 
         //set button on click listeners:
         setButtonOnClickListeners();
+
+        //Initialize the illegal move popup object:
+        buildIllegalMovePopupView();
     }
 
     /**
@@ -58,24 +60,18 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int moveNumericValue = Integer.parseInt(buttonValue);
 
-                //perform a move validation:
-                boolean legalMove = sudoku.validateMove(i, moveNumericValue);
-                if (legalMove){
+                //perform move validation:
+                if (sudoku.validateMove(i, moveNumericValue)){
                     gridItems[i] = buttonValue;
                 } else {
-                    System.out.println("Illegal Move. Please try again.");
+                    illegalMovePopupView();
                 }
 
-
-                CustomGridAdapter gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems, false);
+                CustomGridAdapter gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems);
                 gridView.setAdapter(gridAdapter);
             }
         });
     }
-
-
-
-
 
     /**
      * Function that creates a new sudoku grid and converts the grid to strings for the view.
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity
                 gridItems[i] = Integer.toString(grid[i]);
             }
         }
-        gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems, true);
+        gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems);
         gridView.setAdapter(gridAdapter);
     }
 
@@ -109,7 +105,6 @@ public class MainActivity extends AppCompatActivity
         button_7 = (Button) this.findViewById(R.id.button_7);
         button_8 = (Button) this.findViewById(R.id.button_8);
         button_9 = (Button) this.findViewById(R.id.button_9);
-        //gridViewItems = (TextView) this.findViewById(R.id.grid_item);
     }
 
     /**
@@ -177,11 +172,31 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Wrapper function for the illegal move popup view.
+     * This function creates and shows the popup view.
+     */
+    private void illegalMovePopupView(){
+        AlertDialog alert11 = illegalMovePopup.create();
+        alert11.show();
+    }
 
+
+    /**
+     * Function that initializes and builds the illegal move popup window.
+     */
+    private void buildIllegalMovePopupView(){
+        illegalMovePopup = new AlertDialog.Builder(MainActivity.this);
+        illegalMovePopup.setTitle("Oops!");
+        illegalMovePopup.setMessage("This move is illegal. Please try again :)");
+        illegalMovePopup.setCancelable(true);
+
+        illegalMovePopup.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+    }
 }
-
-
-
-
 
 
