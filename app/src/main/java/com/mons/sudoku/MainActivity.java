@@ -22,9 +22,9 @@ public class MainActivity extends AppCompatActivity
             button_3, button_4, button_5, button_6, button_7,
             button_8, button_9;
     public String buttonValue = "";
-    public String[] gridItems = new String[81];
+    public String[] gridItems;
     private Sudoku sudoku = Sudoku.getInstance();
-    private AlertDialog.Builder illegalMovePopup;
+    private AlertDialog.Builder illegalMovePopup, winPopup;
 
     /**
      * Creates the MainActivity view when the application starts up.
@@ -45,8 +45,26 @@ public class MainActivity extends AppCompatActivity
         //set button on click listeners:
         setButtonOnClickListeners();
 
-        //Initialize the illegal move popup object:
+        //Initialize the popup views:
         buildIllegalMovePopupView();
+        buildWinPopupView();
+    }
+
+    /**
+     * Function that creates a new sudoku grid and converts the grid to strings for the view.
+     */
+    public void newGame(){
+        int[] grid = sudoku.newGrid();
+        gridItems = new String[81];
+        for (int i = 0; i < grid.length; i++) {
+            if (grid[i] == 0){
+                gridItems[i] = "";
+            } else {
+                gridItems[i] = Integer.toString(grid[i]);
+            }
+        }
+        gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems);
+        gridView.setAdapter(gridAdapter);
     }
 
     /**
@@ -65,6 +83,9 @@ public class MainActivity extends AppCompatActivity
                     //the move is legal:
                     gridItems[i] = buttonValue;
                     sudoku.newMove(i, moveNumericValue);
+                    if(sudoku.checkWinState()){
+                        winPopupView();
+                    }
                 } else {
                     //the move is illegal:
                     illegalMovePopupView();
@@ -75,23 +96,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
-    /**
-     * Function that creates a new sudoku grid and converts the grid to strings for the view.
-     */
-    public void newGame(){
-        int[] grid = sudoku.newGrid();
-        for (int i = 0; i < grid.length; i++) {
-            if (grid[i] == 0){
-                gridItems[i] = "";
-            } else {
-                gridItems[i] = Integer.toString(grid[i]);
-            }
-        }
-        gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems);
-        gridView.setAdapter(gridAdapter);
-    }
-
 
     /**
      * Function that initializes the UI components.
@@ -176,7 +180,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Wrapper function for the illegal move popup view.
+     * Wrapper function for the Illegal Move Popup View.
      * This function creates and shows the popup view.
      */
     private void illegalMovePopupView(){
@@ -184,6 +188,14 @@ public class MainActivity extends AppCompatActivity
         alert11.show();
     }
 
+    /**
+     * Wrapper function for the Win Popup View.
+     * This function creates and shows the popup view.
+     */
+    private void winPopupView(){
+        AlertDialog alert11 = winPopup.create();
+        alert11.show();
+    }
 
     /**
      * Function that initializes and builds the illegal move popup window.
@@ -197,6 +209,23 @@ public class MainActivity extends AppCompatActivity
         illegalMovePopup.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
+            }
+        });
+    }
+
+    /**
+     * Function that initializes and builds the win popup window.
+     */
+    private void buildWinPopupView(){
+        winPopup = new AlertDialog.Builder(MainActivity.this);
+        winPopup.setTitle("Congratulations!");
+        winPopup.setMessage("You have successfully solved the Sudoku puzzle.");
+        winPopup.setCancelable(true);
+
+        winPopup.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                newGame();
             }
         });
     }

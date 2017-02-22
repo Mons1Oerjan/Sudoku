@@ -37,7 +37,6 @@ public class Sudoku {
         return instance;
     }
 
-
     /**
      * Creates a new grid
      *
@@ -52,7 +51,7 @@ public class Sudoku {
     }
 
     /**
-     * Resets the given grid
+     * Resets the grid
      *
      */
     private void resetGrid(){
@@ -263,5 +262,21 @@ public class Sudoku {
         grid[movePosition] = moveValue;
         removeValueFromMap(movePosition, moveValue);
         removeAllValuesAt(movePosition);
+    }
+
+    /**
+     * Function that checks if the player completed the game and won.
+     * If all values for each key in the hashmap is empty, then the player has won.
+     *
+     * @return boolean
+     */
+    public boolean checkWinState(){
+        for (int i = 0; i < totalgridsize; i++) {
+            ArrayList<Integer> legalMoves = available.get(i);
+            if (!legalMoves.isEmpty()){
+                return false;
+            }
+        }
+        return true;
     }
 }
