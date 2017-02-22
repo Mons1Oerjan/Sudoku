@@ -181,7 +181,7 @@ public class Sudoku {
         //remove the value param from the row:
         int interval_finish = (9 * row)-1;
         int interval_start = interval_finish - 8;
-        for (int i = interval_start; i < interval_finish; i++) {
+        for (int i = interval_start; i <= interval_finish; i++) {
             removeValueAtIndex(i, value);
         }
 
@@ -232,6 +232,7 @@ public class Sudoku {
 
     /**
      * Function that removes the value from the key list in the hashmap
+     *
      * @param key
      * @param value
      */
@@ -243,6 +244,7 @@ public class Sudoku {
 
     /**
      * Function that validates the user's sudoku game move.
+     *
      * @param movePosition
      * @param moveValue
      * @return
@@ -250,5 +252,16 @@ public class Sudoku {
     public boolean validateMove(int movePosition, int moveValue) {
         ArrayList<Integer> legalMoves = available.get(movePosition);
         return legalMoves.contains(moveValue);
+    }
+
+    /**
+     * Function that performs a new move and updates available positions.
+     *
+     * @param movePosition
+     */
+    public void newMove(int movePosition, int moveValue){
+        grid[movePosition] = moveValue;
+        removeValueFromMap(movePosition, moveValue);
+        removeAllValuesAt(movePosition);
     }
 }

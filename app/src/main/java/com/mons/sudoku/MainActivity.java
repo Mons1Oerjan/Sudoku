@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //initialize UI elements:
+        //initialize UI components (buttons and gridview):
         initComponents();
 
         //set the first game on startup:
@@ -62,8 +62,11 @@ public class MainActivity extends AppCompatActivity
 
                 //perform move validation:
                 if (sudoku.validateMove(i, moveNumericValue)){
+                    //the move is legal:
                     gridItems[i] = buttonValue;
+                    sudoku.newMove(i, moveNumericValue);
                 } else {
+                    //the move is illegal:
                     illegalMovePopupView();
                 }
 
