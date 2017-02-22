@@ -56,9 +56,16 @@ public class MainActivity extends AppCompatActivity
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int moveNumericValue = Integer.parseInt(buttonValue);
 
-                //TODO: check if this is one of the starting board values.
-                gridItems[i] = buttonValue;
+                //perform a move validation:
+                boolean legalMove = sudoku.validateMove(i, moveNumericValue);
+                if (legalMove){
+                    gridItems[i] = buttonValue;
+                } else {
+                    System.out.println("Illegal Move. Please try again.");
+                }
+
 
                 CustomGridAdapter gridAdapter = new CustomGridAdapter(MainActivity.this, gridItems, false);
                 gridView.setAdapter(gridAdapter);

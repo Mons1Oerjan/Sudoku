@@ -24,9 +24,7 @@ public class Sudoku {
     /**
      * Private constructor satisfies the singleton pattern
      */
-    private Sudoku() {
-
-    }
+    private Sudoku() {}
 
     /**
      * Lazy initialization of the Sudoku singleton.
@@ -97,10 +95,22 @@ public class Sudoku {
 
             //check the current grid position for input:
             if (value != 0) {
-                //This tile has some input. We must remove it from the available inputs
+                //this tile has some input. We must remove it from the available inputs
                 removeValueFromMap(i, value);
+                //remove all values from this specific index. This prevents the user to overwrite the starting board state:
+                removeAllValuesAt(i);
             }
         }
+    }
+
+    /**
+     * Function that removes all values at the given gridIndex.
+     *
+     * @param key
+     */
+    private void removeAllValuesAt(int key){
+        ArrayList<Integer> values = available.get(key);
+        values.clear();
     }
 
     /**
@@ -114,7 +124,7 @@ public class Sudoku {
         //find the column:
         int column = (gridIndex+1) % 9;
         if (column == 0){
-            //the 9th column mod 9 = 0, so set it to 9
+            //(the 9th column) mod 9 = 0, so set it to 9
             column = 9;
         }
 
@@ -231,4 +241,14 @@ public class Sudoku {
         }
     }
 
+    /**
+     * Function that validates the user's sudoku game move.
+     * @param movePosition
+     * @param moveValue
+     * @return
+     */
+    public boolean validateMove(int movePosition, int moveValue) {
+        ArrayList<Integer> legalMoves = available.get(movePosition);
+        return legalMoves.contains(moveValue);
+    }
 }
