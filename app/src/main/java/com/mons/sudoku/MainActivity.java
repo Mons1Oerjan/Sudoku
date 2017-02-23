@@ -83,8 +83,9 @@ public class MainActivity extends AppCompatActivity
                     //the move is legal:
                     gridItems[i] = buttonValue;
                     sudoku.newMove(i, moveNumericValue);
+                    //check if the player won the game:
                     if(sudoku.checkWinState()){
-                        winPopupView();
+                        winPopupView(checkAllGridItems());
                     }
                 } else {
                     //the move is illegal:
@@ -95,6 +96,20 @@ public class MainActivity extends AppCompatActivity
                 gridView.setAdapter(gridAdapter);
             }
         });
+    }
+
+    /**
+     * Function that checks if all gridItems have been filled in by the player.
+     * The player wins the game if all grid items have been filled in.
+     * @return
+     */
+    private boolean checkAllGridItems(){
+        for (int i = 0; i < gridItems.length; i++) {
+            if (gridItems[i] == ""){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -192,7 +207,14 @@ public class MainActivity extends AppCompatActivity
      * Wrapper function for the Win Popup View.
      * This function creates and shows the popup view.
      */
-    private void winPopupView(){
+    private void winPopupView(boolean wonGame){
+        if (wonGame){
+            winPopup.setTitle("Congratulations!");
+            winPopup.setMessage("You have successfully solved the Sudoku puzzle.");
+        } else {
+            winPopup.setTitle("Game Over.");
+            winPopup.setMessage("Please try again!");
+        }
         AlertDialog alert11 = winPopup.create();
         alert11.show();
     }
@@ -218,8 +240,6 @@ public class MainActivity extends AppCompatActivity
      */
     private void buildWinPopupView(){
         winPopup = new AlertDialog.Builder(MainActivity.this);
-        winPopup.setTitle("Congratulations!");
-        winPopup.setMessage("You have successfully solved the Sudoku puzzle.");
         winPopup.setCancelable(true);
 
         winPopup.setPositiveButton("New Game", new DialogInterface.OnClickListener() {
