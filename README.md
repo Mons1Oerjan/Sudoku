@@ -10,5 +10,10 @@ Android Sudoku game created with Android Studios.
 
 ## Polish
 - I separated each grid item with black lines to make each individual grid item stand out to the user.
-- I added popup windows for illegal moves and the win-state.
+- I added popup windows for illegal moves, the win-state, and the loose-state.
+- I created buttons with round corners.
+- I added a black image as the application background.
+- I changed the colors of the application theme.
+
+
 
